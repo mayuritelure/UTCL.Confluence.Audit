@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+
+ 
+  <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="9.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Redis" Version="2.2.0" />
+    <PackageReference Include="UTCL.Confluence.Common.Cache" Version="1.0.6" />
+    <PackageReference Include="UTCL.Confluence.Common.Email" Version="1.0.0" />
+    <PackageReference Include="UTCL.Confluence.Common.Storage" Version="1.0.13" />
+    <PackageReference Include="WindowsAzure.Storage" Version="9.3.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\UTCL.Confluence.Audit.DataEntities\UTCL.Confluence.Audit.DataEntities.csproj" />
+    <ProjectReference Include="..\UTCL.Confluence.Audit.DTO\UTCL.Confluence.Audit.DTO.csproj" />
+  </ItemGroup>
+  
+</Project>
