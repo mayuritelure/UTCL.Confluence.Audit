@@ -29,8 +29,42 @@ namespace UTCL.Confluence.Audit.APIControllers.Controllers
         }
         public IConfiguration Configuration { get; }
 
+        [HttpGet]
+        [Route("GetAuditScheduleCount/{month}/{year}/{status}")]
+        public int GetAuditScheduleCount(string month, string year, string status, [FromQuery] string accountName, [FromQuery] string role, [FromQuery] string userName, [FromQuery] string unitId, [FromQuery] string SystemLevel)
+        {
+            _logger.LogInformation("OPL Controller Started. Executed : GetOPLCount");
+            int auditAllRecordsCount = _auditScheduleService.GetAuditScheduleCount(month, year, status, accountName, role, userName, unitId, SystemLevel);
+            _logger.LogInformation("OPL Controller Ended. Executed : GetOPLCount");
+            return auditAllRecordsCount;
+
+        }
+
+        [HttpGet]
+        [Route("GetScheduleAuditFilter/{month}/{year}/{status}/{pageSize}/{pageNumber}")]
+        public List<AuditScheduleDTO> GetScheduleAuditFilter(string month, string year, string status, int pageSize, int pageNumber, [FromQuery] string accountName, [FromQuery] string role, [FromQuery] string userName, [FromQuery] string unitId,[FromQuery] string SystemLevel)
+        {
+
+            try
+            {
+                _logger.LogInformation("Good To Find Controller Started. Executed : FilterGoodToFind");
+                List<AuditScheduleDTO> auditScheduleDTOList = new List<AuditScheduleDTO>();
+                var audit_List = _auditScheduleService.GetScheduleAuditFilter(month, year, status, accountName, role, userName, unitId, SystemLevel, pageSize, pageNumber);
+
+                foreach (var audit in audit_List)
+                {
+                    auditScheduleDTOList.Add(ServiceToDTOMapper(audit));
+                }
+                _logger.LogInformation("Good To Find Controller Ended. Executed : FilterGoodToFind");
+                return auditScheduleDTOList;
+            }
+            catch (Exception ex)
+            { throw ex; }
+
+        }
+
         [HttpPost]
-        [Route("CreateOPL")]
+        [Route("CreateAuditSchedule")]
         public AuditScheduleDTO CreateAuditSchedule([FromBody] AuditScheduleDTO audit_DTO)
         {
             try
@@ -45,6 +79,10 @@ namespace UTCL.Confluence.Audit.APIControllers.Controllers
             { throw; }
 
         }
+
+       
+
+
         private AuditScheduleDTO ServiceToDTOMapper(AuditScheduleServiceModel auditScheduleservice_model)
         {
             try

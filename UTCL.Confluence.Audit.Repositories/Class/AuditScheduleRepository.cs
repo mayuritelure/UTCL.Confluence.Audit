@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UTCL.Confluence.Audit.DataEntities.Models;
 using UTCL.Confluence.Audit.DomainServices.InterfaceRepository;
@@ -20,6 +23,72 @@ namespace UTCL.Confluence.Audit.Repositories.Class
             _logger = logger;
             _utclconfluencesqldbauditdevContext = utclconfluencesqldbauditdevContext;
         }
+
+        [Obsolete]
+        public int GetAuditScheduleCount(string month, string year, string status, string accountName, string role, string userName, string unitId,string SystemLevel)
+        {
+            try
+            {
+                _logger.LogInformation("OPL Repository Started. Executed : GetOPLCount");
+                SqlParameter monthparm = new SqlParameter("@month", month);
+                SqlParameter yearparm = new SqlParameter("@year", year);
+                SqlParameter statusparm = new SqlParameter("@status", status);
+                SqlParameter accountNameparm = new SqlParameter("@accountName", accountName);
+                SqlParameter roleparm = new SqlParameter("@role", role);
+                SqlParameter unitIdparm = new SqlParameter("@unitId", unitId);
+                SqlParameter userNameparm = new SqlParameter("@userName", userName);
+                SqlParameter SystemLevelparm = new SqlParameter("@SystemLevel", SystemLevel);
+
+                int audit_Count = _utclconfluencesqldbauditdevContext.AuditScheduleData.FromSql("spGetScheduleAuditCount @month, @year,@status,@accountName,@role,@userName,@unitId,@SystemLevel",
+                            monthparm, yearparm, statusparm, accountNameparm, roleparm, userNameparm, unitIdparm, SystemLevelparm).ToList().Count();
+               
+
+                _logger.LogInformation("OPL Repository Ended. Executed : GetOPLCount");
+
+                return audit_Count;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+
+            }
+        }
+
+        [Obsolete]
+        public List<AuditScheduleServiceModel> GetScheduleAuditFilter(string month, string year, string status, string accountName, string role, string userName, string unitId,string SystemLevel, int pageSize, int pageNumber)
+        {
+            try
+            {
+                _logger.LogInformation("OPL Repository Started. Executed : FilterOPL");
+                if (pageNumber >= 0)
+                {
+                    pageNumber = pageNumber + 1;
+                }
+
+                SqlParameter monthparm = new SqlParameter("@month", month);
+                SqlParameter yearparm = new SqlParameter("@year", year);
+                SqlParameter statusparm = new SqlParameter("@status", status);
+                SqlParameter accountNameparm = new SqlParameter("@accountName", accountName);
+                SqlParameter roleparm = new SqlParameter("@role", role);
+                SqlParameter unitIdparm = new SqlParameter("@unitId", unitId);
+                SqlParameter userNameparm = new SqlParameter("@userName", userName);
+                SqlParameter SystemLevelparm = new SqlParameter("@systemLevel", SystemLevel);
+                SqlParameter pageNumberparm = new SqlParameter("@pageNumber", pageNumber);
+                SqlParameter pageSizeparm = new SqlParameter("@pageSize", pageSize);
+
+                var audit_List = _utclconfluencesqldbauditdevContext.AuditScheduleData.FromSql("spFilterByOPLRoleBased @month, @year,@status,@accountName,@role,@userName,@unitId,@systemLevel,@pageNumber,@pageSize",
+                    monthparm, yearparm, statusparm, accountNameparm, roleparm, userNameparm, unitIdparm, SystemLevelparm,pageNumberparm, pageSizeparm).ToList();
+
+                List<AuditScheduleServiceModel> auditServiceList = auditDomainServiceToModelEntity(audit_List);
+
+                _logger.LogInformation("OPL Repository Ended.Executed : FilterOPL");
+                return auditServiceList;
+            }
+            catch (Exception ex)
+            { throw ex; }
+
+        }
+
 
         public AuditScheduleServiceModel CreateAuditSchedule(AuditScheduleServiceModel audit_Service)
         {
@@ -50,6 +119,7 @@ namespace UTCL.Confluence.Audit.Repositories.Class
                 throw ex;
             }
         }
+
         private DataEntities.Models.AuditScheduleData ServiceToModelMapper(AuditScheduleServiceModel auditServiceModel)
         {
             try
@@ -97,6 +167,56 @@ namespace UTCL.Confluence.Audit.Repositories.Class
                 throw ex;
             }
 
+
+        }
+
+        private AuditScheduleServiceModel ModelToServiceMapper(DataEntities.Models.AuditScheduleData audit_DE)
+        {
+            try
+            {
+                _logger.LogInformation("OPL Repository  Started. Executed : ModelToServiceMapper");
+                var audit_DTO = RepositoryToDTOMapper(audit_DE);
+                var _audit_serviceModel = new AuditScheduleServiceModel(audit_DTO);
+
+                audit_DTO.Id = audit_DE.Id;
+                audit_DTO.AuditArea = audit_DE.AuditArea;
+                audit_DTO.Team = audit_DE.Team;
+                audit_DTO.Month = audit_DE.Month;
+                audit_DTO.UnitName = audit_DE.UnitName;
+                audit_DTO.UnitId = audit_DE.UnitId;
+                audit_DTO.AuditStatus = audit_DE.AuditStatus;
+                audit_DTO.Modified = audit_DE.Modified;
+                audit_DTO.Created = audit_DE.Created;
+                audit_DTO.Title = audit_DE.Title;
+                audit_DTO.Auditor = audit_DE.Auditor;
+                audit_DTO.StartDate = audit_DE.StartDate;
+                audit_DTO.EndDate = audit_DE.EndDate;
+                audit_DTO.AuditType = audit_DE.AuditType;
+                audit_DTO.Level = audit_DE.Level;
+                audit_DTO.FiscalYear = audit_DE.FiscalYear;
+                audit_DTO.AuditorCommnet = audit_DE.AuditorCommnet;
+                audit_DTO.AuditeeCommnet = audit_DE.AuditeeCommnet;
+                audit_DTO.AuditorDecision = audit_DE.AuditorDecision;
+                audit_DTO.AuditeeDecission = audit_DE.AuditeeDecission;
+                audit_DTO.AuditZone = audit_DE.AuditZone;
+                audit_DTO.PageState = audit_DE.PageState;
+                audit_DTO.TestRole = audit_DE.TestRole;
+                audit_DTO.CreatedBy = audit_DE.CreatedBy;
+                audit_DTO.ModifiedBy = audit_DE.ModifiedBy;
+                audit_DTO.AuditCategory = audit_DE.AuditCategory;
+                audit_DTO.AuditCategoryAuditCatagoryName = audit_DE.AuditCategoryAuditCatagoryName;
+                audit_DTO.Section = audit_DE.Section;
+                audit_DTO.PersonnelInteractedWith = audit_DE.PersonnelInteractedWith;
+                audit_DTO.TotalScore = audit_DE.TotalScore;
+
+                _logger.LogInformation("OPL Repository  Ended. Executed : ModelToServiceMapper");
+                return _audit_serviceModel;
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
 
         }
 
@@ -152,5 +272,31 @@ namespace UTCL.Confluence.Audit.Repositories.Class
 
 
         }
+
+        private List<AuditScheduleServiceModel> auditDomainServiceToModelEntity(List<DataEntities.Models.AuditScheduleData> auditModelEntityList)
+        {
+
+            List<AuditScheduleServiceModel> auditDomainServiceList = new List<AuditScheduleServiceModel>();
+
+            try
+            {
+                _logger.LogInformation("OPL Repository  Started. Executed : OPLDomainServiceToModelEntity");
+                foreach (DataEntities.Models.AuditScheduleData audit in auditModelEntityList)
+                {
+                    var auditScheduleDomainService = ModelToServiceMapper(audit);
+                    auditDomainServiceList.Add(auditScheduleDomainService);
+                }
+
+                _logger.LogInformation("OPL Repository  Ended. Executed : OPLDomainServiceToModelEntity");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return auditDomainServiceList;
+        }
+
+        
     }
 }

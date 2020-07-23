@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
-namespace UTCL.Confluence.Audit.DTO
+namespace UTCL.Confluence.Audit.DataEntities
 {
-    public class AuditScheduleDTO
+    public partial class AuditScheduleData
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public string AuditArea { get; set; }
         public string Team { get; set; }
+        public string Department { get; set; }
         public string Month { get; set; }
         public string UnitName { get; set; }
         public string UnitId { get; set; }
         public string AuditStatus { get; set; }
+        public string AuditorFor { get; set; }
+        public string AuditFrequency { get; set; }
         public DateTime? Modified { get; set; }
         public DateTime? Created { get; set; }
         public string Title { get; set; }
@@ -37,9 +39,5 @@ namespace UTCL.Confluence.Audit.DTO
         public string Section { get; set; }
         public string PersonnelInteractedWith { get; set; }
         public string TotalScore { get; set; }
-        public string ActionPerformed { get; set; }
-        public string Department { get; set; }
-        public string AuditorFor { get; set; }
-        public string AuditFrequency { get; set; }
     }
 }

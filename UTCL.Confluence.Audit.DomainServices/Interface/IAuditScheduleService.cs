@@ -8,6 +8,10 @@ namespace UTCL.Confluence.Audit.DomainServices.Interface
 {
     public interface IAuditScheduleService
     {
-         public AuditScheduleServiceModel CreateAuditSchedule(AuditScheduleDTO audit_DTO); 
+        int GetAuditScheduleCount(string month, string year, string status, string accountName, string role, string userName, string unitId,string SystemLevel);
+
+        List<AuditScheduleServiceModel> GetScheduleAuditFilter(string month, string year, string status, string accountName, string role, string userName, string unitId, string SystemLevel, int pageSize, int pageNumber);
+
+        public AuditScheduleServiceModel CreateAuditSchedule(AuditScheduleDTO audit_DTO); 
     }
 }
